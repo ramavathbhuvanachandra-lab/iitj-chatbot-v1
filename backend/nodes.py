@@ -26,7 +26,8 @@ def rewrite_query(state: GraphState) -> GraphState:
 
     rewritten_question = rewrite_chain.invoke(
         {
-            "question": state["question"]
+            "question": state["question"],
+            "chat_history": state["chat_history"]
         }
     ).content.strip()
 
@@ -133,7 +134,8 @@ def generate_answer(state: GraphState) -> GraphState:
     response = answer_chain.invoke(
         {
             "context": context,
-            "question": state["question"]
+            "question": state["question"],
+            "chat_history": state["chat_history"]
         }
     )
 

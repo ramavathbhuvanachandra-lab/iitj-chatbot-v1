@@ -1,4 +1,4 @@
-from typing import TypedDict, List
+from typing import TypedDict, List, Dict, Any
 
 from langchain_core.documents import Document
 
@@ -8,6 +8,7 @@ class GraphState(TypedDict):
     # User Input
     # --------------------------------------------------------
     question: str
+    chat_history: List[Dict[str, Any]]
 
     # --------------------------------------------------------
     # Query Processing

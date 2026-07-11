@@ -8,20 +8,32 @@ rewrite_prompt = ChatPromptTemplate.from_messages(
             """
 You are an expert query rewriting assistant.
 
-Your task is to rewrite the user's question for semantic retrieval.
+Your task is to rewrite the user's latest question into a
+clear retrieval-friendly query.
+
+You are also given recent conversation history.
 
 Rules:
-- Preserve the original meaning.
-- Make the question more specific if needed.
+- Use the conversation history only when needed to resolve
+  references like "it", "that", "those", "them", etc.
+- Preserve the user's original intent.
 - Do NOT answer the question.
-- Do NOT add information that the user did not ask for.
+- Do NOT invent missing information.
 - Return only the rewritten query.
 """,
         ),
-        ("human", "{question}"),
+        (
+            "human",
+            """
+Conversation History:
+{chat_history}
+
+Current Question:
+{question}
+"""
+        ),
     ]
 )
-
 
 multi_query_prompt = ChatPromptTemplate.from_messages(
     [
@@ -46,7 +58,6 @@ Rules:
     ]
 )
 
-
 answer_prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -56,26 +67,34 @@ You are an AI assistant for IIT Jodhpur.
 
 Answer ONLY using the provided context.
 
+You are also given recent conversation history to understand
+follow-up questions and references.
+
 Rules:
-- Do not use outside knowledge.
+- Use the conversation history only to understand the user's intent.
+- Do NOT use the conversation history as factual knowledge.
+- Base every factual statement only on the provided context.
 - If the answer is not present in the context, reply exactly:
 
 I don't know based on the provided documents.
 
 - Do not hallucinate.
 - Be concise and accurate.
-- If multiple documents contain useful information, combine them.
+- Combine information from multiple retrieved documents when useful.
 """,
         ),
         (
             "human",
             """
+Conversation History:
+{chat_history}
+
 Context:
 {context}
 
-Question:
+Current Question:
 {question}
-""",
+"""
         ),
     ]
 )
