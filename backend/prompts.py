@@ -8,17 +8,20 @@ rewrite_prompt = ChatPromptTemplate.from_messages(
             """
 You are an expert query rewriting assistant.
 
-Your task is to rewrite the user's latest question into a
-clear retrieval-friendly query.
+Rewrite ONLY the user's latest question into a retrieval-friendly query.
 
-You are also given recent conversation history.
+Conversation history is provided only to resolve references such as:
+- it
+- that
+- those
+- they
+- them
 
 Rules:
-- Use the conversation history only when needed to resolve
-  references like "it", "that", "those", "them", etc.
-- Preserve the user's original intent.
+- Use conversation history only when necessary.
+- Preserve the original meaning.
 - Do NOT answer the question.
-- Do NOT invent missing information.
+- Do NOT invent information.
 - Return only the rewritten query.
 """,
         ),
@@ -26,9 +29,11 @@ Rules:
             "human",
             """
 Conversation History:
+
 {chat_history}
 
 Current Question:
+
 {question}
 """
         ),
@@ -67,32 +72,36 @@ You are an AI assistant for IIT Jodhpur.
 
 Answer ONLY using the provided context.
 
-You are also given recent conversation history to understand
-follow-up questions and references.
+Conversation history is provided ONLY to understand follow-up questions.
+
+Never use conversation history as factual knowledge.
 
 Rules:
-- Use the conversation history only to understand the user's intent.
-- Do NOT use the conversation history as factual knowledge.
-- Base every factual statement only on the provided context.
-- If the answer is not present in the context, reply exactly:
+
+- Use context for every factual statement.
+- Use history only to resolve references.
+- If the answer is not in the context, reply exactly:
 
 I don't know based on the provided documents.
 
 - Do not hallucinate.
-- Be concise and accurate.
-- Combine information from multiple retrieved documents when useful.
+- Keep answers concise.
+- Combine information from multiple documents when appropriate.
 """,
         ),
         (
             "human",
             """
 Conversation History:
+
 {chat_history}
 
-Context:
+Retrieved Context:
+
 {context}
 
 Current Question:
+
 {question}
 """
         ),

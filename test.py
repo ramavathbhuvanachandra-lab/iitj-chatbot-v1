@@ -1,13 +1,7 @@
-import streamlit as st
+from backend.vectorstore import vectorstore
 
-st.set_page_config(
-    page_title="Test",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+print("=" * 60)
+print("NUMBER OF VECTORS")
+print("=" * 60)
 
-with st.sidebar:
-    st.title("Sidebar Test")
-    st.button("New Chat")
-
-st.title("Hello World")
+print(vectorstore._collection.count())

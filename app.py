@@ -27,12 +27,7 @@ from UI.chat import (
 # Backend Graph (Load Once)
 # ---------------------------------------------------
 
-@st.cache_resource
-def load_graph():
-    return create_graph()
-
-
-graph = load_graph()
+graph = create_graph()
 
 # ---------------------------------------------------
 # Session State
