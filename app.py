@@ -23,6 +23,7 @@ from UI.chat import (
     handle_user_prompt,
 )
 
+from UI.components import quick_action_cards
 # ---------------------------------------------------
 # Backend Graph (Load Once)
 # ---------------------------------------------------
@@ -56,6 +57,27 @@ st.caption(
 # ---------------------------------------------------
 
 display_chat_history()
+# ---------------------------------------------------
+# Quick Action Cards
+# ---------------------------------------------------
+
+active_chat = st.session_state.active_chat
+
+messages = st.session_state.conversations[active_chat]["messages"]
+
+# Show only before the first user message
+if len(messages) == 1:
+
+    selected_question = quick_action_cards()
+
+    if selected_question:
+
+        handle_user_prompt(
+            prompt=selected_question,
+            graph=graph,
+        )
+
+        st.rerun()
 
 # ---------------------------------------------------
 # User Input

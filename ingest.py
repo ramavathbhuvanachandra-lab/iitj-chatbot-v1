@@ -1,3 +1,5 @@
+import shutil
+import os
 from backend.ingestion import (
     load_documents,
     split_documents,
@@ -8,6 +10,7 @@ from backend.config import DATA_PATH
 print("=" * 60)
 print("Loading Documents...")
 print("=" * 60)
+
 
 documents = load_documents(DATA_PATH)
 
