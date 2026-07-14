@@ -14,11 +14,6 @@ from backend.vectorstore import vectorstore
 documents = load_documents(DATA_PATH)
 chunks = split_documents(documents)
 
-print("=" * 80)
-print(f"Loaded Documents : {len(documents)}")
-print(f"Created Chunks   : {len(chunks)}")
-print("=" * 80)
-
 
 # =========================================================
 # BM25 Retriever
@@ -41,30 +36,12 @@ retriever = vectorstore.as_retriever(
 # Dense Retrieval
 # =========================================================
 
-# =========================================================
-# Dense Retrieval
-# =========================================================
-
 def dense_retrieve(query: str):
+    """
+    Retrieve the top-k documents using dense vector similarity search.
+    """
 
-    docs = retriever.invoke(query)
-
-    print("\n" + "-" * 80)
-    print("DENSE RETRIEVAL")
-    print("-" * 80)
-    print(f"Query : {query}")
-    print()
-
-    for index, doc in enumerate(docs, start=1):
-
-        source = doc.metadata.get("source", "Unknown")
-
-        print(f"[Dense {index}]")
-        print(f"Source : {source}")
-        print(doc.page_content[:200])
-        print()
-
-    return docs
+    return retriever.invoke(query)
 
 
 # =========================================================
@@ -72,25 +49,13 @@ def dense_retrieve(query: str):
 # =========================================================
 
 def keyword_retrieve(query: str):
+    """
+    Retrieve the top-k documents using BM25 keyword search.
+    """
 
-    docs = bm25_retriever.invoke(query)
+    return bm25_retriever.invoke(query)
 
-    print("\n" + "-" * 80)
-    print("BM25 RETRIEVAL")
-    print("-" * 80)
-    print(f"Query : {query}")
-    print()
 
-    for index, doc in enumerate(docs, start=1):
-
-        source = doc.metadata.get("source", "Unknown")
-
-        print(f"[BM25 {index}]")
-        print(f"Source : {source}")
-        print(doc.page_content[:200])
-        print()
-
-    return docs
 # =========================================================
 # Reciprocal Rank Fusion
 # =========================================================
@@ -100,7 +65,7 @@ RRF_K = 60
 
 def get_document_id(document):
     """
-    Create a unique ID for every chunk.
+    Generate a unique identifier for each retrieved document.
     """
 
     source = document.metadata.get("source", "")
@@ -109,6 +74,10 @@ def get_document_id(document):
 
 
 def reciprocal_rank_fusion(ranked_lists, k=RRF_K):
+    """
+    Combine multiple ranked retrieval results using
+    Reciprocal Rank Fusion (RRF).
+    """
 
     document_scores = defaultdict(float)
     document_lookup = {}
@@ -129,22 +98,6 @@ def reciprocal_rank_fusion(ranked_lists, k=RRF_K):
         reverse=True,
     )
 
-    print("\n" + "=" * 80)
-    print("RRF RESULTS")
-    print("=" * 80)
-
-    for index, (doc_id, score) in enumerate(fused_documents, start=1):
-
-        doc = document_lookup[doc_id]
-
-        source = doc.metadata.get("source", "Unknown")
-
-        print(f"{index}. Score : {score:.5f}")
-        print(f"   Source : {source}")
-        print()
-
-    print("=" * 80)
-
     return [
         document_lookup[document_id]
         for document_id, _ in fused_documents
@@ -159,27 +112,18 @@ FINAL_CONTEXT_DOCUMENTS = 5
 
 
 def format_context(documents):
+    """
+    Format retrieved documents into a single context string
+    that will be provided to the LLM.
+    """
 
     formatted_context = []
 
-    print("\n" + "=" * 80)
-    print("FINAL DOCUMENTS SENT TO LLM")
-    print("=" * 80)
-
     for index, document in enumerate(documents, start=1):
-
-        source = document.metadata.get("source", "Unknown")
-
-        print(f"[Document {index}]")
-        print(f"Source : {source}")
-        print(document.page_content[:300])
-        print()
 
         formatted_context.append(
             f"Document {index}\n"
             f"{document.page_content}"
         )
-
-    print("=" * 80)
 
     return "\n\n".join(formatted_context)
