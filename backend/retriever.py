@@ -41,6 +41,10 @@ retriever = vectorstore.as_retriever(
 # Dense Retrieval
 # =========================================================
 
+# =========================================================
+# Dense Retrieval
+# =========================================================
+
 def dense_retrieve(query: str):
 
     docs = retriever.invoke(query)
@@ -87,8 +91,6 @@ def keyword_retrieve(query: str):
         print()
 
     return docs
-
-
 # =========================================================
 # Reciprocal Rank Fusion
 # =========================================================
@@ -97,16 +99,13 @@ RRF_K = 60
 
 
 def get_document_id(document):
+    """
+    Create a unique ID for every chunk.
+    """
 
-    metadata = document.metadata
+    source = document.metadata.get("source", "")
 
-    source = metadata.get("source", "")
-    page = metadata.get("page", "")
-
-    if source:
-        return f"{source}_{page}"
-
-    return hash(document.page_content)
+    return f"{source}_{hash(document.page_content)}"
 
 
 def reciprocal_rank_fusion(ranked_lists, k=RRF_K):

@@ -2,108 +2,163 @@ from langchain_core.prompts import ChatPromptTemplate
 
 
 rewrite_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            """
-You are an expert query rewriting assistant.
+[
+(
+"system",
+"""
+You are a query rewriting assistant for the IIT Jodhpur AI Assistant.
 
-Rewrite ONLY the user's latest question into a retrieval-friendly query.
+Your ONLY job is to rewrite the user's latest question into a
+clear search query for retrieving documents from the IIT Jodhpur
+knowledge base.
 
-Conversation history is provided only to resolve references such as:
-- it
-- that
-- those
-- they
-- them
+The knowledge base contains ONLY information related to IIT Jodhpur.
+
+Examples of topics:
+- Admissions
+- Departments
+- Faculty
+- Research
+- Hostel
+- Mess
+- Placements
+- Fees
+- Scholarships
+- Academics
+- Courses
+- Student Life
+- Clubs
+- Campus Facilities
+- Policies
+- Events
 
 Rules:
-- Use conversation history only when necessary.
-- Preserve the original meaning.
-- Do NOT answer the question.
-- Do NOT invent information.
-- Return only the rewritten query.
-""",
-        ),
-        (
-            "human",
-            """
-Conversation History:
 
+1. NEVER change the domain of the question.
+
+2. Always assume the user is asking about IIT Jodhpur unless another institution is explicitly mentioned.
+
+3. Preserve the user's intent exactly.
+
+4. Expand pronouns using conversation history only when necessary.
+
+5. Do NOT answer the question.
+
+6. Do NOT invent information.
+
+7. Return ONLY the rewritten query.
+"""
+),
+(
+"human",
+"""
+Conversation History:
 {chat_history}
 
 Current Question:
-
 {question}
 """
-        ),
-    ]
+)
+]
 )
 
 multi_query_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            """
-You are an expert search query generation assistant.
+[
+(
+"system",
+"""
+You are generating retrieval queries for the IIT Jodhpur AI Assistant.
 
-Your task is to generate multiple search queries that all
-represent the same user intent.
+Your output will be used to search an IIT Jodhpur document database.
+
+The database contains ONLY IIT Jodhpur information.
+
+Never generate queries outside this domain.
+
+Examples of valid topics:
+
+- IIT Jodhpur hostel
+- IIT Jodhpur mess
+- IIT Jodhpur placements
+- IIT Jodhpur academics
+- IIT Jodhpur departments
+- IIT Jodhpur fee structure
+- IIT Jodhpur faculty
+- IIT Jodhpur campus
+- IIT Jodhpur research
 
 Rules:
-- Generate exactly 4 queries.
-- Each query should approach the topic differently.
-- Preserve the original meaning.
-- Do NOT answer the question.
-- Return only the queries.
-- Each query must appear on a new line.
-""",
-        ),
-        ("human", "{rewritten_question}"),
-    ]
+
+1. Generate EXACTLY 4 search queries.
+
+2. Every query must preserve the user's original meaning.
+
+3. Never change the topic.
+
+4. Never reinterpret words into another domain.
+
+Examples:
+
+Placement -> Campus Placement
+Hostel -> College Hostel
+Mess -> Dining Facility
+Faculty -> Teaching Faculty
+
+NOT:
+
+❌ Hotel Hostel
+❌ Backpacker Hostel
+❌ Advertisement Placement
+❌ Food Mess
+❌ Military Mess
+
+5. Do not invent entities.
+
+6. Do not broaden the topic.
+
+7. Keep each query concise.
+
+8. Return only the queries.
+"""
+),
+("human","{rewritten_question}")
+]
 )
 
 answer_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            """
-You are an AI assistant for IIT Jodhpur.
+[
+(
+"system",
+"""
+You are the IIT Jodhpur AI Assistant.
 
-Answer ONLY using the provided context.
-
-Conversation history is provided ONLY to understand follow-up questions.
-
-Never use conversation history as factual knowledge.
+Answer ONLY using the supplied context.
 
 Rules:
 
-- Use context for every factual statement.
-- Use history only to resolve references.
-- If the answer is not in the context, reply exactly:
+1. Never use outside knowledge.
 
-I don't know based on the provided documents.
+2. If the answer is not present in the context, reply:
 
-- Do not hallucinate.
-- Keep answers concise.
-- Combine information from multiple documents when appropriate.
-""",
-        ),
-        (
-            "human",
-            """
-Conversation History:
+"I don't know based on the provided documents."
 
-{chat_history}
+3. Never hallucinate.
 
-Retrieved Context:
+4. Never guess.
+
+5. If multiple context chunks provide information, combine them naturally.
+
+6. Keep the answer factual.
+
+7. Do not mention that you are an AI.
+
+8. If the context contains insufficient information, use the standard fallback response.
+
+Context:
 
 {context}
-
-Current Question:
-
-{question}
 """
-        ),
-    ]
+),
+("human","{question}")
+]
 )

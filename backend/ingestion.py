@@ -39,6 +39,19 @@ def split_documents(documents):
     )
 
     chunks = text_splitter.split_documents(documents)
+    print("=" * 80)
+
+    for i, chunk in enumerate(chunks):
+        source = chunk.metadata.get("source", "Unknown")
+        
+        if "Document_4_Campus_Life_and_Facilities.docx" in source:
+            print(f"\nCHUNK {i}")
+            print("-" * 60)
+            print(chunk.page_content)
+            print("=" * 80)
+
+
+
 
     return chunks
 
