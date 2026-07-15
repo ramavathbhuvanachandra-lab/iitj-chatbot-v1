@@ -16,7 +16,9 @@ def load_documents(data_path: str):
     )
 
     documents = loader.load()
-
+    print(f"Loaded {len(documents)} documents")
+    for doc in documents:
+        print(doc.metadata)
     return documents
 
 
@@ -39,7 +41,7 @@ def split_documents(documents):
     )
 
     chunks = text_splitter.split_documents(documents)
-    print("=" * 80)
+    print(f"Created {len(chunks)} chunks")
 
   
 
