@@ -108,7 +108,7 @@ def reciprocal_rank_fusion(ranked_lists, k=RRF_K):
 # Final Context
 # =========================================================
 
-FINAL_CONTEXT_DOCUMENTS = 5
+FINAL_CONTEXT_DOCUMENTS = 10
 
 
 def format_context(documents):

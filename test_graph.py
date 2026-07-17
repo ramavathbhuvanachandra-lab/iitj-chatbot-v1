@@ -2,7 +2,7 @@ from backend.graph import create_graph
 
 graph = create_graph()
 
-question = "what are Hostel Guidelines"
+question ="Provide complete information about the IIT Jodhpur admission process"
 
 state = {
     "question": question,
