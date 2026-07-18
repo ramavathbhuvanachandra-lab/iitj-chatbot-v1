@@ -1,5 +1,6 @@
 import streamlit as st
 import uuid
+import time 
 
 
 # ---------------------------------------------------------
@@ -166,6 +167,13 @@ def display_chat_history():
 
             st.markdown(message["content"])
 
+            if (
+                message["role"] == "assistant"
+                and "response_time" in message
+            ):
+                st.caption(
+                    f"⏱️ Response Time: {message['response_time']:.2f} seconds"
+                )
 
 # ---------------------------------------------------------
 # Backend Response
@@ -193,14 +201,16 @@ def get_response(question, graph):
         previous_messages = previous_messages[-10:]
 
         chat_history = format_chat_history(previous_messages)
-
+        start = time.time()
         result = graph.invoke(
             {
                 "question": question,
                 "chat_history": chat_history,
             }
         )
+        end = time.time()
         print("\n" + "=" * 80)
+        print(f"🚀 TOTAL WORKFLOW TIME : {end - start:.2f} sec")
         print("STREAMLIT GRAPH RESULT")
         print("=" * 80)
         
@@ -213,11 +223,12 @@ def get_response(question, graph):
 
         
 
-        return result["answer"]
+        return result["answer"],end - start
+        
 
     except Exception as e:
 
-        return f"❌ Error:\n\n{e}"
+        return f"❌ Error:\n\n{e}",0
 # ---------------------------------------------------------
 # Handle User Prompt
 # ---------------------------------------------------------
@@ -255,7 +266,7 @@ def handle_user_prompt(prompt, graph):
 
         with st.spinner("Thinking..."):
 
-            answer = get_response(
+            answer,response_time  = get_response(
                 question=prompt,
                 graph=graph
             )
@@ -263,15 +274,18 @@ def handle_user_prompt(prompt, graph):
             print("ANSWER RETURNED TO STREAMLIT")
             print(answer)
             print("=" * 80)
-
+            print("DEBUG:", response_time)
 
             st.markdown(answer)
+            st.caption(f"⏱️ Response Time: {response_time:.2f} seconds")
 
     # Save Assistant Message
 
     messages.append(
         {
             "role": "assistant",
-            "content": answer
+            "content": answer,
+            "response_time": response_time
         }
     )
+    print("LAST MESSAGE:", messages[-1])

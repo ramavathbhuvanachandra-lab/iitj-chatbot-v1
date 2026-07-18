@@ -1,6 +1,6 @@
 from backend.state import GraphState
 from backend.llm import llm
-
+import time
 from backend.prompts import (
     rewrite_prompt,
     multi_query_prompt,
@@ -27,8 +27,9 @@ answer_chain = answer_prompt | llm
 # =========================================================
 # Rewrite Query
 # =========================================================
-
 def rewrite_query(state: GraphState) -> GraphState:
+
+    start = time.time()
 
     rewritten_question = rewrite_chain.invoke(
         {
@@ -36,6 +37,8 @@ def rewrite_query(state: GraphState) -> GraphState:
             "chat_history": state["chat_history"]
         }
     ).content.strip()
+
+    print(f"\n Rewrite Query Time: {time.time() - start:.2f} sec")
 
     print("\n" + "=" * 80)
     print("REWRITE QUERY")
@@ -50,7 +53,6 @@ def rewrite_query(state: GraphState) -> GraphState:
     return {
         "rewritten_question": rewritten_question
     }
-
 
 # =========================================================
 # Parse Generated Queries
@@ -76,6 +78,8 @@ def parse_generated_queries(response: str) -> list[str]:
 
 def generate_multi_query(state: GraphState) -> GraphState:
 
+    start = time.time()
+
     response = multi_query_chain.invoke(
         {
             "rewritten_question": state["rewritten_question"]
@@ -85,6 +89,8 @@ def generate_multi_query(state: GraphState) -> GraphState:
     generated_queries = parse_generated_queries(
         response.content
     )
+
+    print(f"\n Multi Query Time: {time.time() - start:.2f} sec")
 
     print("\n" + "=" * 80)
     print("GENERATED SEARCH QUERIES")
@@ -99,12 +105,13 @@ def generate_multi_query(state: GraphState) -> GraphState:
         "generated_queries": generated_queries
     }
 
-
 # =========================================================
 # Hybrid Retrieval
 # =========================================================
 
 def hybrid_retrieve(state: GraphState) -> GraphState:
+
+    start = time.time()
 
     retrieval_results = []
 
@@ -126,11 +133,11 @@ def hybrid_retrieve(state: GraphState) -> GraphState:
         print(f"Keyword Retrieved : {len(keyword_docs)} documents")
 
     print("=" * 80)
+    print(f"\n Hybrid Retrieval Time: {time.time() - start:.2f} sec")
 
     return {
         "retrieval_results": retrieval_results
     }
-
 
 # =========================================================
 # Fuse Documents
@@ -138,9 +145,13 @@ def hybrid_retrieve(state: GraphState) -> GraphState:
 
 def fuse_retrieved_documents(state: GraphState) -> GraphState:
 
+    start = time.time()
+
     fused_docs = reciprocal_rank_fusion(
         state["retrieval_results"]
     )
+
+    print(f"\nRRF Fusion Time: {time.time() - start:.2f} sec")
 
     print("\n" + "=" * 80)
     print("RRF FUSION")
@@ -151,15 +162,17 @@ def fuse_retrieved_documents(state: GraphState) -> GraphState:
     return {
         "fused_docs": fused_docs
     }
-
-
 # =========================================================
 # Compress Context
 # =========================================================
 
 def compress_context(state: GraphState) -> GraphState:
 
+    start = time.time()
+
     compressed_docs = state["fused_docs"][:FINAL_CONTEXT_DOCUMENTS]
+
+    print(f"\n  Context Compression Time: {time.time() - start:.2f} sec")
 
     print("\n" + "=" * 80)
     print("CONTEXT COMPRESSION")
@@ -171,12 +184,13 @@ def compress_context(state: GraphState) -> GraphState:
         "compressed_docs": compressed_docs
     }
 
-
 # =========================================================
 # Generate Answer
 # =========================================================
 
 def generate_answer(state: GraphState) -> GraphState:
+
+    start = time.time()
 
     context = format_context(
         state["compressed_docs"]
@@ -185,7 +199,7 @@ def generate_answer(state: GraphState) -> GraphState:
     print("\n" + "=" * 80)
     print("FINAL CONTEXT SENT TO LLM")
     print("=" * 80)
-    print(context[:1500])   # Prevent terminal flooding
+    print(context[:1500])
     print("=" * 80)
 
     response = answer_chain.invoke(
@@ -195,6 +209,8 @@ def generate_answer(state: GraphState) -> GraphState:
             "chat_history": state["chat_history"]
         }
     )
+
+    print(f"\n Answer Generation Time: {time.time() - start:.2f} sec")
 
     print("\n" + "=" * 80)
     print("FINAL ANSWER")
