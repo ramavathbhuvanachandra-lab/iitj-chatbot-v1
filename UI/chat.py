@@ -1,6 +1,7 @@
 import streamlit as st
 import uuid
 import time 
+from backend.message_db import save_message
 
 
 # ---------------------------------------------------------
@@ -166,7 +167,7 @@ def display_chat_history():
         with st.chat_message(message["role"]):
 
             st.markdown(message["content"])
-
+            
             if (
                 message["role"] == "assistant"
                 and "response_time" in message
@@ -232,60 +233,77 @@ def get_response(question, graph):
 # ---------------------------------------------------------
 # Handle User Prompt
 # ---------------------------------------------------------
-
 def handle_user_prompt(prompt, graph):
 
     # Get Active Conversation
     active_chat = st.session_state.active_chat
     messages = st.session_state.conversations[active_chat]["messages"]
 
-    # Store User Message
+    # ---------------- USER MESSAGE ---------------- #
+
     messages.append(
         {
             "role": "user",
             "content": prompt
         }
     )
-    # Display User Message
-    # Set Chat Title (First User Message)
+
+    try:
+        save_message(
+            session_id=st.session_state.session_id,
+            role="user",
+            message=prompt
+        )
+    except Exception as e:
+        print(f"Failed to save user message: {e}")
+
+    # Set Chat Title
     if st.session_state.conversations[active_chat]["title"] == "New Chat":
-         st.session_state.conversations[active_chat]["title"] = (
-             generate_chat_title(prompt))
-         
-          
-         
+        st.session_state.conversations[active_chat]["title"] = (
+            generate_chat_title(prompt)
+        )
+
     with st.chat_message("user"):
+        st.markdown(prompt)
 
-      
-      
-     st.markdown(prompt)
-
-    # Assistant Response
+    # ---------------- ASSISTANT RESPONSE ---------------- #
 
     with st.chat_message("assistant"):
 
         with st.spinner("Thinking..."):
 
-            answer,response_time  = get_response(
+            answer, response_time = get_response(
                 question=prompt,
                 graph=graph
             )
-            print("=" * 80)
-            print("ANSWER RETURNED TO STREAMLIT")
-            print(answer)
-            print("=" * 80)
-            print("DEBUG:", response_time)
 
-            st.markdown(answer)
-            st.caption(f"⏱️ Response Time: {response_time:.2f} seconds")
+        # Display Answer
+        st.markdown(answer)
+        st.caption(f"⏱️ Response Time: {response_time:.2f} seconds")
 
-    # Save Assistant Message
+        # Save assistant message in memory
+        messages.append(
+            {
+                "role": "assistant",
+                "content": answer,
+                "response_time": response_time
+            }
+        )
 
-    messages.append(
-        {
-            "role": "assistant",
-            "content": answer,
-            "response_time": response_time
-        }
-    )
-    print("LAST MESSAGE:", messages[-1])
+        # Save assistant message in database
+        try:
+            saved_message = save_message(
+                session_id=st.session_state.session_id,
+                role="assistant",
+                message=answer,
+                response_time=response_time
+            )
+
+            # Save database message id
+            messages[-1]["message_id"] = saved_message["id"]
+
+        except Exception as e:
+            print(f"Failed to save assistant message: {e}")
+            messages[-1]["message_id"] = None
+
+        

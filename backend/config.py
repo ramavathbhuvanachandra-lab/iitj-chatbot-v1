@@ -11,4 +11,4 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATA_PATH = BASE_DIR / "data"/"data_iitj"
-CHROMA_DB_PATH = BASE_DIR / "chroma_db"
+CHROMA_DB_PATH = BASE_DIR / "chroma_db" 
