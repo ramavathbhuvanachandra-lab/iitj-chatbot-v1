@@ -72,7 +72,6 @@ QUICK_ACTIONS = {
         "Provide an overview of all academic departments and schools at IIT Jodhpur along with their major research areas."
 }
 
-
 def quick_action_cards():
     """
     Display quick action buttons.
@@ -83,6 +82,12 @@ def quick_action_cards():
     """
 
     st.markdown("### Quick Actions")
+
+    # Full-width Campus Map button
+    if st.button("🗺️ Campus Map", use_container_width=True):
+        return "CAMPUS_MAP"
+
+    st.write("")
 
     col1, col2 = st.columns(2)
 
@@ -101,5 +106,3 @@ def quick_action_cards():
             return QUICK_ACTIONS["🏛 Departments"]
 
     return None
-
-

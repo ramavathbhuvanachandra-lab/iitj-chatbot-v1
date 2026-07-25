@@ -1,5 +1,21 @@
 [
     {
+        "id": "library",
+        "name": "Library",
+        "aliases": [
+            "library",
+            "central library",
+            "reading room"
+        ],
+        "category": "Academic",
+        "description": "Central library for students and faculty with books, journals and study spaces.",
+        "timings": "9:00 AM - 10:00 PM",
+        "google_maps": "",
+        "directions": "Located near the Academic Block.",
+        "help_text": "If you cannot find the Library, contact the nearest SWC volunteer.",
+        "show_in_map": true
+    },
+    {
         "id": "central_mess",
         "name": "Central Mess",
         "aliases": [
@@ -10,27 +26,157 @@
             "dining hall"
         ],
         "category": "Food",
-        "description": "Main dining facility for students.",
-        "latitude": "",
-        "longitude": "",
+        "description": "Main dining facility serving breakfast, lunch, snacks and dinner.",
+        "timings": "7:30 AM - 9:30 PM",
         "google_maps": "",
-        "directions": "Located near the hostel area.",
-        "help_text": "If you cannot find the Central Mess, please contact the nearest SWC volunteer."
+        "directions": "Located near the hostel complex.",
+        "help_text": "Contact the mess office for meal timings or special meal requests.",
+        "show_in_map": true
     },
     {
-        "id": "library",
-        "name": "Library",
+        "id": "hostel_office",
+        "name": "Hostel Office",
         "aliases": [
-            "library",
-            "central library",
-            "reading room"
+            "hostel office",
+            "warden office"
+        ],
+        "category": "Hostel",
+        "description": "Office handling hostel allocation, room changes and student accommodation.",
+        "timings": "9:00 AM - 5:00 PM",
+        "google_maps": "",
+        "directions": "Located beside the hostel blocks.",
+        "help_text": "Visit during office hours for hostel-related assistance.",
+        "show_in_map": true
+    },
+    {
+        "id": "medical_centre",
+        "name": "Medical Centre",
+        "aliases": [
+            "medical",
+            "medical centre",
+            "clinic",
+            "health centre",
+            "doctor"
+        ],
+        "category": "Healthcare",
+        "description": "Campus healthcare facility providing medical consultation and first aid.",
+        "timings": "24 Hours (Emergency)",
+        "google_maps": "",
+        "directions": "Located near the Academic Area.",
+        "help_text": "Visit immediately in case of illness or injury.",
+        "show_in_map": true
+    },
+    {
+        "id": "security_office",
+        "name": "Security Office",
+        "aliases": [
+            "security",
+            "security office",
+            "guard"
+        ],
+        "category": "Emergency",
+        "description": "Campus security office for emergencies and safety assistance.",
+        "timings": "24 Hours",
+        "google_maps": "",
+        "directions": "Located near the Main Gate.",
+        "help_text": "Contact immediately for security-related emergencies.",
+        "show_in_map": true
+    },
+    {
+        "id": "academic_block",
+        "name": "Academic Block",
+        "aliases": [
+            "academic block",
+            "classrooms",
+            "lecture hall"
         ],
         "category": "Academic",
-        "description": "Central library for students and faculty.",
-        "latitude": "",
-        "longitude": "",
+        "description": "Main academic building containing classrooms, lecture halls and faculty offices.",
+        "timings": "8:00 AM - 8:00 PM",
         "google_maps": "",
-        "directions": "",
-        "help_text": "If you cannot find the Library, please contact the nearest SWC volunteer."
+        "directions": "Located at the centre of the campus.",
+        "help_text": "Check your timetable before visiting classrooms.",
+        "show_in_map": true
+    },
+    {
+        "id": "main_gate",
+        "name": "Main Gate",
+        "aliases": [
+            "main gate",
+            "gate",
+            "entrance"
+        ],
+        "category": "Campus",
+        "description": "Primary entrance and exit point of IIT Jodhpur.",
+        "timings": "24 Hours",
+        "google_maps": "",
+        "directions": "Located on the main access road to the campus.",
+        "help_text": "Visitors should carry a valid ID card.",
+        "show_in_map": true
+    },
+    {
+        "id": "sports_complex",
+        "name": "Sports Complex",
+        "aliases": [
+            "sports",
+            "gym",
+            "sports complex",
+            "playground"
+        ],
+        "category": "Sports",
+        "description": "Sports facility with indoor and outdoor games, gymnasium and fitness area.",
+        "timings": "6:00 AM - 10:00 PM",
+        "google_maps": "",
+        "directions": "Located near the student activity area.",
+        "help_text": "Carry your institute ID while using sports facilities.",
+        "show_in_map": true
+    },
+    {
+        "id": "student_activity_center",
+        "name": "Student Activity Center",
+        "aliases": [
+            "sac",
+            "student activity center",
+            "activity center"
+        ],
+        "category": "Campus Life",
+        "description": "Venue for clubs, student events, cultural activities and meetings.",
+        "timings": "9:00 AM - 10:00 PM",
+        "google_maps": "",
+        "directions": "Located close to the Academic Block.",
+        "help_text": "Visit for club registrations and student activities.",
+        "show_in_map": true
+    },
+    {
+        "id": "placement_cell",
+        "name": "Placement Cell",
+        "aliases": [
+            "placement",
+            "placement cell"
+        ],
+        "category": "Office",
+        "description": "...",
+        "timings": "...",
+        "google_maps": "",
+        "directions": "...",
+        "help_text": "...",
+        "show_in_map": true
+    },
+    {
+        "id": "sbi_atm",
+        "name": "SBI ATM",
+        "aliases": [
+            "atm",
+            "sbi",
+            "bank",
+            "cash"
+        ],
+        "category": "Banking",
+        "description": "ATM facility for cash withdrawal and banking services.",
+        "timings": "24 Hours",
+        "google_maps": "",
+        "directions": "Located near the shopping complex.",
+        "help_text": "Contact the bank branch if the ATM is unavailable.",
+        "show_in_map": true
     }
 ]

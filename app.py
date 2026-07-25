@@ -2,6 +2,7 @@ import streamlit as st
 from UI.login import render_login
 import time
 from UI.sidebar import render_sidebar
+from UI.campus_map import render_campus_map
 # ---------------------------------------------------
 # Page Configuration (MUST BE FIRST)
 # ---------------------------------------------------
@@ -38,6 +39,9 @@ graph = create_graph()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+
+if "show_campus_map" not in st.session_state:
+    st.session_state.show_campus_map = False
 
 if not st.session_state.logged_in:
     render_login()
@@ -77,16 +81,35 @@ messages = st.session_state.conversations[active_chat]["messages"]
 # Show only before the first user message
 if len(messages) == 1:
 
-    selected_question = quick_action_cards()
+    if st.session_state.show_campus_map:
 
-    if selected_question:
+        selected_location = render_campus_map()
 
-        handle_user_prompt(
-            prompt=selected_question,
-            graph=graph,
-        )
+        if selected_location:
 
-        st.rerun()
+            handle_user_prompt(
+                prompt=f"Where is the {selected_location}?",
+                graph=graph,
+            )
+
+            st.rerun()
+
+    else:
+
+        selected_question = quick_action_cards()
+
+        if selected_question:
+
+            if selected_question == "CAMPUS_MAP":
+                st.session_state.show_campus_map = True
+                st.rerun()
+
+            handle_user_prompt(
+                prompt=selected_question,
+                graph=graph,
+            )
+
+            st.rerun()
 
 # ---------------------------------------------------
 # User Input
