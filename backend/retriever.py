@@ -12,7 +12,9 @@ from backend.vectorstore import vectorstore
 # =========================================================
 
 documents = load_documents(DATA_PATH)
+
 chunks = split_documents(documents)
+
 
 
 # =========================================================
@@ -21,6 +23,8 @@ chunks = split_documents(documents)
 
 bm25_retriever = BM25Retriever.from_documents(chunks)
 bm25_retriever.k = 5
+
+
 
 
 # =========================================================

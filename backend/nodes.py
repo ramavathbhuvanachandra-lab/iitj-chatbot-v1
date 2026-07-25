@@ -15,6 +15,7 @@ from backend.retriever import (
     format_context,
 )
 
+import time
 # =========================================================
 # Chains
 # =========================================================
@@ -29,7 +30,7 @@ answer_chain = answer_prompt | llm
 # =========================================================
 def rewrite_query(state: GraphState) -> GraphState:
 
-    start = time.time()
+    start = time.perf_counter()
 
     rewritten_question = rewrite_chain.invoke(
         {
@@ -38,7 +39,7 @@ def rewrite_query(state: GraphState) -> GraphState:
         }
     ).content.strip()
 
-    print(f"\n Rewrite Query Time: {time.time() - start:.2f} sec")
+    print(f"[TIME] rewrite_query: {time.perf_counter() - start:.2f}s", flush=True)
 
     print("\n" + "=" * 80)
     print("REWRITE QUERY")
@@ -78,7 +79,7 @@ def parse_generated_queries(response: str) -> list[str]:
 
 def generate_multi_query(state: GraphState) -> GraphState:
 
-    start = time.time()
+    start = time.perf_counter()
 
     response = multi_query_chain.invoke(
         {
@@ -90,7 +91,7 @@ def generate_multi_query(state: GraphState) -> GraphState:
         response.content
     )
 
-    print(f"\n Multi Query Time: {time.time() - start:.2f} sec")
+    print(f"[TIME] generate_multi_query: {time.perf_counter() - start:.2f}s", flush=True)
 
     print("\n" + "=" * 80)
     print("GENERATED SEARCH QUERIES")
@@ -111,7 +112,7 @@ def generate_multi_query(state: GraphState) -> GraphState:
 
 def hybrid_retrieve(state: GraphState) -> GraphState:
 
-    start = time.time()
+    start = time.perf_counter()
 
     retrieval_results = []
 
@@ -133,25 +134,24 @@ def hybrid_retrieve(state: GraphState) -> GraphState:
         print(f"Keyword Retrieved : {len(keyword_docs)} documents")
 
     print("=" * 80)
-    print(f"\n Hybrid Retrieval Time: {time.time() - start:.2f} sec")
+    print(f"[TIME] hybrid_retrieve: {time.perf_counter() - start:.2f}s", flush=True)
 
     return {
         "retrieval_results": retrieval_results
     }
-
 # =========================================================
 # Fuse Documents
 # =========================================================
 
 def fuse_retrieved_documents(state: GraphState) -> GraphState:
 
-    start = time.time()
+    start = time.perf_counter()
 
     fused_docs = reciprocal_rank_fusion(
         state["retrieval_results"]
     )
 
-    print(f"\nRRF Fusion Time: {time.time() - start:.2f} sec")
+    print(f"[TIME] fuse_retrieved_documents: {time.perf_counter() - start:.2f}s", flush=True)
 
     print("\n" + "=" * 80)
     print("RRF FUSION")
@@ -168,11 +168,11 @@ def fuse_retrieved_documents(state: GraphState) -> GraphState:
 
 def compress_context(state: GraphState) -> GraphState:
 
-    start = time.time()
+    start = time.perf_counter()
 
     compressed_docs = state["fused_docs"][:FINAL_CONTEXT_DOCUMENTS]
 
-    print(f"\n  Context Compression Time: {time.time() - start:.2f} sec")
+    print(f"[TIME] compress_context: {time.perf_counter() - start:.2f}s", flush=True)
 
     print("\n" + "=" * 80)
     print("CONTEXT COMPRESSION")
@@ -190,7 +190,7 @@ def compress_context(state: GraphState) -> GraphState:
 
 def generate_answer(state: GraphState) -> GraphState:
 
-    start = time.time()
+    start = time.perf_counter()
 
     context = format_context(
         state["compressed_docs"]
@@ -217,7 +217,7 @@ def generate_answer(state: GraphState) -> GraphState:
     print("=" * 80)
     print(response.content.strip())
     print("=" * 80)
-
+    print(f"[TIME] generate_answer: {time.perf_counter() - start:.2f}s", flush=True)
     return {
         "answer": response.content.strip()
     }

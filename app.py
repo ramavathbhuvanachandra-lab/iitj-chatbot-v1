@@ -1,4 +1,6 @@
+
 import streamlit as st
+
 from UI.login import render_login
 import time
 from UI.sidebar import render_sidebar
@@ -27,11 +29,25 @@ from UI.chat import (
 )
 from UI.login import render_login
 from UI.components import quick_action_cards
+from UI.components import quick_action_cards
 # ---------------------------------------------------
 # Backend Graph (Load Once)
 # ---------------------------------------------------
 
+
+import time
+
+start = time.perf_counter()
+
 graph = create_graph()
+
+print(f"Graph creation took: {time.perf_counter() - start:.2f}s", flush=True)
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+logging.info("Graph created")
 
 # ---------------------------------------------------
 # Session State
@@ -47,13 +63,18 @@ if not st.session_state.logged_in:
     render_login()
     st.stop()
 
+
+
+
 initialize_chat()
+
 
 # ---------------------------------------------------
 # Sidebar
 # ---------------------------------------------------
 
 render_sidebar()
+
 
 # ---------------------------------------------------
 # Main Page
@@ -70,6 +91,7 @@ st.caption(
 # ---------------------------------------------------
 
 display_chat_history()
+
 # ---------------------------------------------------
 # Quick Action Cards
 # ---------------------------------------------------
