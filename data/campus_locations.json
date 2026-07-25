@@ -34,21 +34,6 @@
         "show_in_map": true
     },
     {
-        "id": "hostel_office",
-        "name": "Hostel Office",
-        "aliases": [
-            "hostel office",
-            "warden office"
-        ],
-        "category": "Hostel",
-        "description": "Office handling hostel allocation, room changes and student accommodation.",
-        "timings": "9:00 AM - 5:00 PM",
-        "google_maps": "",
-        "directions": "Located beside the hostel blocks.",
-        "help_text": "Visit during office hours for hostel-related assistance.",
-        "show_in_map": true
-    },
-    {
         "id": "medical_centre",
         "name": "Medical Centre",
         "aliases": [

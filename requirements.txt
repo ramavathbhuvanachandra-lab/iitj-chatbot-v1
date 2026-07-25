@@ -17,7 +17,7 @@ docx2txt
 pypdf
 
 rank-bm25
-
+supabase==2.31.0
 
 
 numpy

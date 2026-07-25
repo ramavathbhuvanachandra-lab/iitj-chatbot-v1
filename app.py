@@ -35,19 +35,28 @@ from UI.components import quick_action_cards
 # ---------------------------------------------------
 
 
-import time
-
-start = time.perf_counter()
-
-graph = create_graph()
-
-print(f"Graph creation took: {time.perf_counter() - start:.2f}s", flush=True)
-
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
-logging.info("Graph created")
+
+@st.cache_resource
+def get_graph():
+    start = time.perf_counter()
+
+    graph = create_graph()
+
+    print(
+        f"Graph creation took: {time.perf_counter() - start:.2f}s",
+        flush=True,
+    )
+
+    logging.info("Graph created")
+
+    return graph
+
+
+graph = get_graph()
 
 # ---------------------------------------------------
 # Session State
