@@ -2,6 +2,7 @@ import streamlit as st
 import uuid
 import time 
 from backend.message_db import save_message
+from backend.assistant_router import assistant_router
 
 
 # ---------------------------------------------------------
@@ -202,34 +203,80 @@ def get_response(question, graph):
         previous_messages = previous_messages[-10:]
 
         chat_history = format_chat_history(previous_messages)
-        start = time.time()
-        result = graph.invoke(
-            {
-                "question": question,
-                "chat_history": chat_history,
-            }
-        )
-        end = time.time()
-        print("\n" + "=" * 80)
-        print(f"🚀 TOTAL WORKFLOW TIME : {end - start:.2f} sec")
-        print("STREAMLIT GRAPH RESULT")
-        print("=" * 80)
-        
-        for key, value in result.items():
-            print(f"\n----- {key} -----")
-            print(value)
 
-        print("=" * 80)
+        # -------------------------------
+        # Structured Routing
+        # -------------------------------
+        route = assistant_router(question)
 
+        final_response = ""
 
-        
+        # Navigation / Emergency response
+        for item in route["structured"]:
 
-        return result["answer"],end - start
-        
+            if item["type"] == "navigation":
+
+                location = item["data"]
+
+                final_response += (
+                    f"📍 **{location['name']}**\n\n"
+                    f"**Category:** {location['category']}\n\n"
+                    f"{location['description']}\n\n"
+                    f"**Directions:** {location['directions']}\n\n"
+                    f"{location['help_text']}\n\n"
+                )
+
+            elif item["type"] == "emergency":
+
+                contact = item["data"]
+
+                final_response += (
+                    f"🚨 **{contact['name']}**\n\n"
+                    f"**Phone:** {contact['phone']}\n\n"
+                    f"{contact['description']}\n\n"
+                    f"{contact['help_text']}\n\n"
+                )
+
+        total_time = 0
+
+        # -------------------------------
+        # Existing RAG Workflow
+        # -------------------------------
+        if route["need_rag"]:
+
+            start = time.time()
+
+            result = graph.invoke(
+                {
+                    "question": question,
+                    "chat_history": chat_history,
+                }
+            )
+
+            end = time.time()
+            total_time = end - start
+
+            print("\n" + "=" * 80)
+            print(f"🚀 TOTAL WORKFLOW TIME : {total_time:.2f} sec")
+            print("STREAMLIT GRAPH RESULT")
+            print("=" * 80)
+
+            for key, value in result.items():
+                print(f"\n----- {key} -----")
+                print(value)
+
+            print("=" * 80)
+
+            if final_response:
+                final_response += "\n---\n\n"
+
+            final_response += result["answer"]
+
+        return final_response, total_time
 
     except Exception as e:
 
-        return f"❌ Error:\n\n{e}",0
+        return f"❌ Error:\n\n{e}", 0
 # ---------------------------------------------------------
 # Handle User Prompt
 # ---------------------------------------------------------

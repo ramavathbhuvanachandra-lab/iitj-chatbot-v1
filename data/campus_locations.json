@@ -1,0 +1,36 @@
+[
+    {
+        "id": "central_mess",
+        "name": "Central Mess",
+        "aliases": [
+            "mess",
+            "central mess",
+            "canteen",
+            "food court",
+            "dining hall"
+        ],
+        "category": "Food",
+        "description": "Main dining facility for students.",
+        "latitude": "",
+        "longitude": "",
+        "google_maps": "",
+        "directions": "Located near the hostel area.",
+        "help_text": "If you cannot find the Central Mess, please contact the nearest SWC volunteer."
+    },
+    {
+        "id": "library",
+        "name": "Library",
+        "aliases": [
+            "library",
+            "central library",
+            "reading room"
+        ],
+        "category": "Academic",
+        "description": "Central library for students and faculty.",
+        "latitude": "",
+        "longitude": "",
+        "google_maps": "",
+        "directions": "",
+        "help_text": "If you cannot find the Library, please contact the nearest SWC volunteer."
+    }
+]
