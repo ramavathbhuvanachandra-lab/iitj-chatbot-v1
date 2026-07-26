@@ -66,3 +66,18 @@ def create_vectorstore(chunks):
     )
 
     return vectorstore
+
+
+if __name__ == "__main__":
+    DATA_PATH = "./data/data_iitj"
+
+    print("Loading documents...")
+    documents = load_documents(DATA_PATH)
+
+    print("Splitting documents...")
+    chunks = split_documents(documents)
+
+    print("Creating Chroma vector store...")
+    create_vectorstore(chunks)
+
+    print("✅ Ingestion completed successfully!")
