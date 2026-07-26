@@ -9,50 +9,95 @@ def assistant_router(question: str):
 
     structured = []
 
-    location = find_location(question)
-    if location:
-        structured.append({
-            "type": "navigation",
-            "data": location
-        })
+    question_lower = question.lower()
 
+    # Navigation intent keywords
+    NAVIGATION_KEYWORDS = [
+        "where",
+        "location",
+        "locate",
+        "map",
+        "maps",
+        "navigate",
+        "navigation",
+        "direction",
+        "directions",
+        "how do i reach",
+        "how to reach",
+        "take me",
+        "go to",
+        "find",
+        "nearest",
+        "near",
+        "route",
+        "way to"
+    ]
+
+    # Check if the user is asking for navigation
+    is_navigation = any(
+        keyword in question_lower
+        for keyword in NAVIGATION_KEYWORDS
+    )
+
+    # -------------------------------
+    # Campus Navigation
+    # -------------------------------
+    if is_navigation:
+        location = find_location(question)
+
+        if location:
+            structured.append({
+                "type": "navigation",
+                "data": location
+            })
+
+    # -------------------------------
+    # Emergency Contacts
+    # -------------------------------
     emergency = find_emergency(question)
+
     if emergency:
         structured.append({
             "type": "emergency",
             "data": emergency
         })
 
-    # Simple V1 rule
-    question_lower = question.lower()
-
-    question_lower = question.lower()
-
+    # -------------------------------
+    # RAG Decision
+    # -------------------------------
     information_keywords = [
-    "timing",
-    "timings",
-    "time",
-    "hours",
-    "working hours",
-    "open",
-    "close",
-    "fee",
-    "fees",
-    "admission",
-    "hostel",
-    "facility",
-    "facilities",
-    "department",
-    "course",
-    "syllabus",
-    "process",
-    "procedure",
-    "rules",
-    "eligibility",
-    "contact",
-    "email",
-    "what",
-    "when",
+        "timing",
+        "timings",
+        "time",
+        "hours",
+        "working hours",
+        "open",
+        "close",
+        "fee",
+        "fees",
+        "admission",
+        "hostel",
+        "facility",
+        "facilities",
+        "department",
+        "course",
+        "syllabus",
+        "process",
+        "procedure",
+        "rules",
+        "eligibility",
+        "contact",
+        "email",
+        "what",
+        "when",
+        "why",
+        "who",
+        "which",
+        "explain",
+        "tell me",
+        "provide",
+        "information",
+        "details"
     ]
 
     need_rag = any(
@@ -60,13 +105,12 @@ def assistant_router(question: str):
         for keyword in information_keywords
     )
 
-    # If nothing was found in structured data,
-   # always use RAG.
+    # If nothing matched in structured routing,
+    # always use RAG.
     if not structured:
-       need_rag = True
+        need_rag = True
 
     return {
         "structured": structured,
         "need_rag": need_rag,
     }
-

@@ -1,14 +1,8 @@
-from backend.assistant_router import assistant_router
+from langchain_ollama import ChatOllama
 
-questions = [
+llm = ChatOllama(
+    model="qwen2.5:3b",
+    base_url="http://localhost:11434"
+)
 
-    
-
-    "Where is the Hostel Office?",
-    "Hostel fees",
-]
-
-for q in questions:
-    print("=" * 80)
-    print("Question:", q)
-    print(assistant_router(q))
+print(llm.invoke("Hello"))

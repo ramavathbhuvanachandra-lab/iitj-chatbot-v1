@@ -3,7 +3,7 @@ import uuid
 import time 
 from backend.message_db import save_message
 from backend.assistant_router import assistant_router
-
+import traceback
 
 # ---------------------------------------------------------
 # Initialize Session State
@@ -217,25 +217,39 @@ def get_response(question, graph):
             if item["type"] == "navigation":
 
                 location = item["data"]
+                final_response += f"📍 **{location['name']}**\n\n"
+                if location.get("description"):
+                    final_response += f"{location['description']}\n\n"
 
-                final_response += (
-                    f"📍 **{location['name']}**\n\n"
-                    f"**Category:** {location['category']}\n\n"
-                    f"{location['description']}\n\n"
-                    f"**Directions:** {location['directions']}\n\n"
-                    f"{location['help_text']}\n\n"
-                )
+                if location.get("timings"):
+                    final_response += f"🕒 **Timings:** {location['timings']}\n\n"
+                if location.get("google_maps"):
+                    final_response += (
+                        f"🗺️ **Google Maps:**\n"
+                        f"{location['google_maps']}\n\n"
+                    )
 
             elif item["type"] == "emergency":
 
                 contact = item["data"]
 
-                final_response += (
-                    f"🚨 **{contact['name']}**\n\n"
-                    f"**Phone:** {contact['phone']}\n\n"
-                    f"{contact['description']}\n\n"
-                    f"{contact['help_text']}\n\n"
-                )
+                final_response += f"📍 **{location['name']}**\n\n"
+                # Description
+                if location.get("description"):
+                    final_response += f"{location['description']}\n\n"
+                # Timings (only if available)
+                if location.get("timings"):
+                    final_response += f"🕒 **Timings:** {location['timings']}\n\n"
+                # Google Maps Link (most important)
+                if location.get("google_maps"):
+                     final_response += (
+                        f"🗺️ **Google Maps:**\n"
+                        f"{location['google_maps']}\n\n"
+                     )
+      
+              
+
+                
 
         total_time = 0
 
@@ -245,13 +259,18 @@ def get_response(question, graph):
         if route["need_rag"]:
 
             start = time.time()
+            try:
 
-            result = graph.invoke(
-                {
+               result = graph.invoke(
+                 {
                     "question": question,
                     "chat_history": chat_history,
-                }
-            )
+                 }
+                )
+            except Exception:
+                traceback.print_exc()
+                raise   
+
 
             end = time.time()
             total_time = end - start
@@ -275,6 +294,9 @@ def get_response(question, graph):
         return final_response, total_time
 
     except Exception as e:
+        print("=" * 80)
+        traceback.print_exc()
+        print("=" * 80)
 
         return f"❌ Error:\n\n{e}", 0
 # ---------------------------------------------------------
@@ -302,6 +324,9 @@ def handle_user_prompt(prompt, graph):
             message=prompt
         )
     except Exception as e:
+        print("=" * 80)
+        traceback.print_exc()
+        print("=" * 80)
         print(f"Failed to save user message: {e}")
 
     # Set Chat Title

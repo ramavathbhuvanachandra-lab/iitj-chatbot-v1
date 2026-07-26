@@ -59,19 +59,18 @@ def error_box(message: str):
 # ---------------------------------------------------------
 
 QUICK_ACTIONS = {
-    "🎓 Admission":
-        "Provide complete information about the IIT Jodhpur admission process, required documents, registration, and joining procedure.",
+    "🎓 Admissions":
+        "Provide complete information about IIT Jodhpur admissions, reporting process, document verification, orientation, and joining formalities.",
 
-    "🏠 Hostel":
+    "🏠 Hostel & Mess":
         "Provide complete information about IIT Jodhpur hostels, hostel allocation, facilities, mess, Wi-Fi, laundry, and hostel rules.",
 
-    "💰 Fees":
-        "Provide complete information about the IIT Jodhpur fee structure, fee payment process, scholarships, and refund policy.",
+    "🚨 Emergency":
+        "Provide all IIT Jodhpur emergency contacts, Medical Centre information, ambulance, security, and student support services.",
 
-    "🏛 Departments":
-        "Provide an overview of all academic departments and schools at IIT Jodhpur along with their major research areas."
+    "📚 Library & IT":
+        "Provide complete information about the library, Wi-Fi, ERP, institute email, computer centre, and IT services."
 }
-
 def quick_action_cards():
     """
     Display quick action buttons.
@@ -92,17 +91,17 @@ def quick_action_cards():
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("🎓 Admission", use_container_width=True):
-            return QUICK_ACTIONS["🎓 Admission"]
+        if st.button("🎓 Admissions", use_container_width=True):
+            return QUICK_ACTIONS["🎓 Admissions"]
 
-        if st.button("💰 Fees", use_container_width=True):
-            return QUICK_ACTIONS["💰 Fees"]
+        if st.button("🚨 Emergency", use_container_width=True):
+            return QUICK_ACTIONS["🚨 Emergency"]
 
     with col2:
-        if st.button("🏠 Hostel", use_container_width=True):
-            return QUICK_ACTIONS["🏠 Hostel"]
+        if st.button("🏠 Hostel & Mess", use_container_width=True):
+            return QUICK_ACTIONS["🏠 Hostel & Mess"]
 
-        if st.button("🏛 Departments", use_container_width=True):
-            return QUICK_ACTIONS["🏛 Departments"]
+        if st.button("📚 Library & IT", use_container_width=True):
+            return QUICK_ACTIONS["📚 Library & IT"]
 
     return None
