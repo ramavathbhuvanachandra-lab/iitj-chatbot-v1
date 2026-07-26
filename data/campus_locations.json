@@ -6,14 +6,17 @@
             "lhc",
             "lecture hall",
             "lecture halls",
-            "classrooms"
+            "classrooms",
+            "xerox",
+            "photocopy",
+            "printing"
         ],
         "category": "Academic",
-        "description": "The primary academic complex where lectures, tutorials, examinations, and academic activities are conducted.",
+        "description": "The primary academic complex where lectures, tutorials, examinations, and academic activities are conducted. A Xerox/photocopy and printing facility is also available here.",
         "timings": "",
         "google_maps": "https://maps.app.goo.gl/f17EDGE344LJCyMa6",
         "directions": "Located in the central academic area of the campus.",
-        "help_text": "Visit this location for regular classes, lectures, and examinations.",
+        "help_text": "Visit this location for regular classes, lectures, examinations, and Xerox/photocopy and printing services.",
         "show_in_map": true
     },
     {
