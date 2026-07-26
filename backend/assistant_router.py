@@ -13,26 +13,21 @@ def assistant_router(question: str):
 
     # Navigation intent keywords
     NAVIGATION_KEYWORDS = [
-        "where",
-        "location",
-        "locate",
-        "map",
-        "maps",
-        "navigate",
-        "navigation",
-        "direction",
-        "directions",
-        "how do i reach",
-        "how to reach",
-        "take me",
-        "go to",
-        "find",
-        "nearest",
-        "near",
-        "route",
-        "way to"
-    ]
-
+    "where is",
+    "location",
+    "locate",
+    "map",
+    "maps",
+    "navigate",
+    "navigation",
+    "direction",
+    "directions",
+    "how do i reach",
+    "how to reach",
+    "take me to",
+    "route to",
+    "way to"
+]
     # Check if the user is asking for navigation
     is_navigation = any(
         keyword in question_lower

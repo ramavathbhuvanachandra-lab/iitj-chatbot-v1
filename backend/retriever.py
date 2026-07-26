@@ -22,7 +22,7 @@ chunks = split_documents(documents)
 # =========================================================
 
 bm25_retriever = BM25Retriever.from_documents(chunks)
-bm25_retriever.k = 5
+bm25_retriever.k = 15
 
 
 
@@ -32,7 +32,7 @@ bm25_retriever.k = 5
 # =========================================================
 
 retriever = vectorstore.as_retriever(
-    search_kwargs={"k": 5}
+    search_kwargs={"k": 15}
 )
 
 
@@ -41,12 +41,17 @@ retriever = vectorstore.as_retriever(
 # =========================================================
 
 def dense_retrieve(query: str):
-    """
-    Retrieve the top-k documents using dense vector similarity search.
-    """
+    docs = retriever.invoke(query)
 
-    return retriever.invoke(query)
+    print("\n===== DENSE RETRIEVAL =====")
+    for i, doc in enumerate(docs, 1):
+        first_line = doc.page_content.split("\n")[0]
+        print(f"{i}. {first_line}")
 
+        if "two dining halls" in doc.page_content.lower():
+            print("✅ FOUND THE CORRECT CHUNK!")
+
+    return docs
 
 # =========================================================
 # Keyword Retrieval

@@ -57,54 +57,55 @@ Current Question:
     )
 ]
 )
-multi_query_prompt = ChatPromptTemplate.from_messages(
-[
-    (
-        "system",
-        """
-You are generating retrieval queries for the IIT Jodhpur Student Well-Being Committee (SWC) Assistant.
+from langchain_core.prompts import ChatPromptTemplate
+multi_query_prompt = ChatPromptTemplate.from_template("""
+You are a search query generation assistant for the IIT Jodhpur RAG system.
 
-Your output will be used to search the IIT Jodhpur knowledge base.
+Generate EXACTLY 3 search queries for retrieving relevant documents.
 
-The knowledge base contains ONLY IIT Jodhpur information.
+Guidelines:
+- Preserve the original meaning and intent of the question.
+- Keep the important keywords from the original question whenever possible.
+- Prefer small wording changes, sentence restructuring, or light rephrasing.
+- Minor synonyms may be used only if they naturally improve retrieval, but avoid changing the topic or introducing new concepts.
+- At least one query should remain very close to the original question.
+- The remaining queries should be semantically equivalent with slight variations.
+- Return exactly 3 queries.
+- Output one query per line.
+- Do not number the queries.
+- Do not include explanations.
 
-Never generate queries outside this domain.
+Examples:
 
-Examples of valid topics:
+Original:
+How many dining halls are there?
 
-- IIT Jodhpur admissions
-- IIT Jodhpur hostel
-- IIT Jodhpur mess
-- IIT Jodhpur academics
-- IIT Jodhpur departments
-- IIT Jodhpur fee structure
-- IIT Jodhpur placements
-- IIT Jodhpur library
-- IIT Jodhpur ERP
-- IIT Jodhpur Wi-Fi
-- IIT Jodhpur IT services
-- IIT Jodhpur Medical Centre
-- IIT Jodhpur emergency contacts
-- IIT Jodhpur campus navigation
+Good:
+How many dining halls are there at IIT Jodhpur?
+How many dining halls does IIT Jodhpur have?
+Where are the dining halls at IIT Jodhpur?
 
-Rules:
+Avoid:
+How many food courts are there?
+How many restaurants are available?
+How many canteens are there?
 
-1. Generate EXACTLY 4 search queries.
-2. Every query must preserve the user's original meaning.
-3. Never change the topic.
-4. Never reinterpret words into another domain.
-5. Do not invent entities.
-6. Do not broaden the topic.
-7. Keep each query concise.
-8. Return ONLY the four queries.
-"""
-    ),
-    (
-        "human",
-        "{rewritten_question}"
-    )
-]
-)
+Original:
+Where is the hostel office?
+
+Good:
+Where is the hostel office?
+How can I reach the hostel office?
+What is the location of the hostel office?
+
+Avoid:
+Where is the accommodation office?
+Where is the residence office?
+
+Question:
+{rewritten_question}
+""")
+
 answer_prompt = ChatPromptTemplate.from_messages(
 [
     (
@@ -122,11 +123,11 @@ Follow these rules STRICTLY:
 
 2. Never invent, assume, or hallucinate information.
 
-3. If the retrieved context contains enough information to answer the question, provide a clear, accurate, concise, and well-structured response.
+3. If the answer is present in the retrieved context, answer the user's question directly using that information.
 
-4. If the retrieved context contains only partial information, answer using ONLY the available information. Do not fabricate missing details.
+4. If the retrieved context contains only partial information, answer using ONLY the available information. Clearly state any missing details instead of making assumptions.
 
-5. If the user's question is related to IIT Jodhpur but the required information is NOT available in the retrieved context, reply exactly:
+5. Only if the retrieved context contains NO information relevant to the user's question, reply exactly:
 
 "I'm sorry, I couldn't find that information in my knowledge base. Please contact your nearest Student Guide (SG) or the Student Well-Being Committee (SWC) for further assistance."
 

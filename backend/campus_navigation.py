@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import re
 
 
 # Path to data/campus_locations.json
@@ -19,7 +20,6 @@ def load_locations():
         print(f"[Campus Navigation] Error loading locations: {e}")
         return []
 
-
 def find_location(query: str):
     """
     Find a campus location by name or alias.
@@ -34,15 +34,20 @@ def find_location(query: str):
 
     for location in locations:
 
-        # Match location name anywhere in the question
-        name = location.get("name", "").lower()
-        if name and name in query:
-            return location
+        # Match location name as a whole word/phrase
+        name = location.get("name", "").lower().strip()
+        if name:
+            pattern = r"\b" + re.escape(name) + r"\b"
+            if re.search(pattern, query):
+                return location
 
-        # Match aliases anywhere in the question
+        # Match aliases as whole words/phrases
         for alias in location.get("aliases", []):
-            alias = alias.lower()
-            if alias in query:
+            alias = alias.lower().strip()
+
+            pattern = r"\b" + re.escape(alias) + r"\b"
+
+            if re.search(pattern, query):
                 return location
 
     return None
