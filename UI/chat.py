@@ -231,21 +231,26 @@ def get_response(question, graph):
 
             elif item["type"] == "emergency":
 
-                contact = item["data"]
+                 contact = item.get("data")
 
-                final_response += f"📍 **{location['name']}**\n\n"
-                # Description
-                if location.get("description"):
-                    final_response += f"{location['description']}\n\n"
-                # Timings (only if available)
-                if location.get("timings"):
-                    final_response += f"🕒 **Timings:** {location['timings']}\n\n"
-                # Google Maps Link (most important)
-                if location.get("google_maps"):
-                     final_response += (
-                        f"🗺️ **Google Maps:**\n"
-                        f"{location['google_maps']}\n\n"
-                     )
+                 if contact:
+                      if contact.get("name"):
+                       final_response += f"📍 **{contact['name']}**\n\n"
+
+                        # Description
+                      if contact.get("description"):
+                       final_response += f"{contact['description']}\n\n"
+
+                       # Timings
+                       if contact.get("timings"):
+                           final_response += f"🕒 **Timings:** {contact['timings']}\n\n"
+
+                        # Google Maps
+                       if contact.get("google_maps"):
+                           final_response += (
+                              f"🗺️ **Google Maps:**\n"
+                              f"{contact['google_maps']}\n\n"
+                            )
       
               
 
