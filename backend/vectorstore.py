@@ -7,6 +7,3 @@ vectorstore = Chroma(
     embedding_function=embeddings,
 )
 
-print("=" * 50)
-print("Chroma Collection Count:", vectorstore._collection.count())
-print("=" * 50)

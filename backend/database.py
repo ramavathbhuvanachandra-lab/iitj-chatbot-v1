@@ -15,4 +15,3 @@ supabase: Client = create_client(
     SUPABASE_SECRET_KEY
 )
 
-print("✅ Supabase Connected Successfully!")

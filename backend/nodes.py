@@ -30,7 +30,7 @@ answer_chain = answer_prompt | llm
 # =========================================================
 def rewrite_query(state: GraphState) -> GraphState:
 
-    start = time.perf_counter()
+   
 
     rewritten_question = rewrite_chain.invoke(
         {
@@ -39,17 +39,8 @@ def rewrite_query(state: GraphState) -> GraphState:
         }
     ).content.strip()
 
-    print(f"[TIME] rewrite_query: {time.perf_counter() - start:.2f}s", flush=True)
 
-    print("\n" + "=" * 80)
-    print("REWRITE QUERY")
-    print("=" * 80)
-    print("Original Question :")
-    print(state["question"])
-    print()
-    print("Rewritten Question :")
-    print(rewritten_question)
-    print("=" * 80)
+  
 
     return {
         "rewritten_question": rewritten_question
@@ -79,7 +70,7 @@ def parse_generated_queries(response: str) -> list[str]:
 
 def generate_multi_query(state: GraphState) -> GraphState:
 
-    start = time.perf_counter()
+   
 
     response = multi_query_chain.invoke(
         {
@@ -91,16 +82,13 @@ def generate_multi_query(state: GraphState) -> GraphState:
         response.content
     )
 
-    print(f"[TIME] generate_multi_query: {time.perf_counter() - start:.2f}s", flush=True)
+    
 
-    print("\n" + "=" * 80)
-    print("GENERATED SEARCH QUERIES")
-    print("=" * 80)
-
+   
     for index, query in enumerate(generated_queries, start=1):
-        print(f"{index}. {query}")
+        pass
 
-    print("=" * 80)
+   
 
     return {
         "generated_queries": generated_queries
@@ -112,17 +100,14 @@ def generate_multi_query(state: GraphState) -> GraphState:
 
 def hybrid_retrieve(state: GraphState) -> GraphState:
 
-    start = time.perf_counter()
+    
 
     retrieval_results = []
 
-    print("\n" + "=" * 80)
-    print("HYBRID RETRIEVAL")
-    print("=" * 80)
-
+    
     for index, query in enumerate(state["generated_queries"], start=1):
 
-        print(f"\nQuery {index}: {query}")
+       
 
         dense_docs = dense_retrieve(query)
         keyword_docs = keyword_retrieve(query)
@@ -130,11 +115,6 @@ def hybrid_retrieve(state: GraphState) -> GraphState:
         retrieval_results.append(dense_docs)
         retrieval_results.append(keyword_docs)
 
-        print(f"Dense Retrieved   : {len(dense_docs)} documents")
-        print(f"Keyword Retrieved : {len(keyword_docs)} documents")
-
-    print("=" * 80)
-    print(f"[TIME] hybrid_retrieve: {time.perf_counter() - start:.2f}s", flush=True)
 
     return {
         "retrieval_results": retrieval_results
@@ -145,19 +125,13 @@ def hybrid_retrieve(state: GraphState) -> GraphState:
 
 def fuse_retrieved_documents(state: GraphState) -> GraphState:
 
-    start = time.perf_counter()
+  
 
     fused_docs = reciprocal_rank_fusion(
         state["retrieval_results"]
     )
 
-    print(f"[TIME] fuse_retrieved_documents: {time.perf_counter() - start:.2f}s", flush=True)
-
-    print("\n" + "=" * 80)
-    print("RRF FUSION")
-    print("=" * 80)
-    print(f"Documents after Fusion : {len(fused_docs)}")
-    print("=" * 80)
+ 
 
     return {
         "fused_docs": fused_docs
@@ -168,17 +142,11 @@ def fuse_retrieved_documents(state: GraphState) -> GraphState:
 
 def compress_context(state: GraphState) -> GraphState:
 
-    start = time.perf_counter()
+   
 
     compressed_docs = state["fused_docs"][:FINAL_CONTEXT_DOCUMENTS]
 
-    print(f"[TIME] compress_context: {time.perf_counter() - start:.2f}s", flush=True)
-
-    print("\n" + "=" * 80)
-    print("CONTEXT COMPRESSION")
-    print("=" * 80)
-    print(f"Keeping Top {len(compressed_docs)} Documents")
-    print("=" * 80)
+    
 
     return {
         "compressed_docs": compressed_docs
@@ -190,17 +158,13 @@ def compress_context(state: GraphState) -> GraphState:
 
 def generate_answer(state: GraphState) -> GraphState:
 
-    start = time.perf_counter()
+    
 
     context = format_context(
         state["compressed_docs"]
     )
 
-    print("\n" + "=" * 80)
-    print("FINAL CONTEXT SENT TO LLM")
-    print("=" * 80)
-    print(context[:1500])
-    print("=" * 80)
+  
 
     response = answer_chain.invoke(
         {
@@ -210,14 +174,9 @@ def generate_answer(state: GraphState) -> GraphState:
         }
     )
 
-    print(f"\n Answer Generation Time: {time.time() - start:.2f} sec")
+   
 
-    print("\n" + "=" * 80)
-    print("FINAL ANSWER")
-    print("=" * 80)
-    print(response.content.strip())
-    print("=" * 80)
-    print(f"[TIME] generate_answer: {time.perf_counter() - start:.2f}s", flush=True)
     return {
-        "answer": response.content.strip()
+        "answer": response.content.strip(),
+        "context": context,
     }

@@ -280,17 +280,12 @@ def get_response(question, graph):
             end = time.time()
             total_time = end - start
 
-            print("\n" + "=" * 80)
-            print(f"🚀 TOTAL WORKFLOW TIME : {total_time:.2f} sec")
-            print("STREAMLIT GRAPH RESULT")
-            print("=" * 80)
-
+            
             for key, value in result.items():
-                print(f"\n----- {key} -----")
-                print(value)
+               
+              
 
-            print("=" * 80)
-
+           
             if final_response:
                 final_response += "\n---\n\n"
 
@@ -299,9 +294,9 @@ def get_response(question, graph):
         return final_response, total_time
 
     except Exception as e:
-        print("=" * 80)
+        
         traceback.print_exc()
-        print("=" * 80)
+      
 
         return f"❌ Error:\n\n{e}", 0
 # ---------------------------------------------------------
@@ -329,9 +324,9 @@ def handle_user_prompt(prompt, graph):
             message=prompt
         )
     except Exception as e:
-        print("=" * 80)
+       
         traceback.print_exc()
-        print("=" * 80)
+       
         print(f"Failed to save user message: {e}")
 
     # Set Chat Title

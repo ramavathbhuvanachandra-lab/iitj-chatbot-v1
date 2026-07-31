@@ -28,6 +28,7 @@ class GraphState(TypedDict):
     # Final Output
     # --------------------------------------------------------
     answer: str
+    context: str
 
     # --------------------------------------------------------
     # Evaluation

@@ -43,13 +43,13 @@ retriever = vectorstore.as_retriever(
 def dense_retrieve(query: str):
     docs = retriever.invoke(query)
 
-    print("\n===== DENSE RETRIEVAL =====")
+   
     for i, doc in enumerate(docs, 1):
         first_line = doc.page_content.split("\n")[0]
-        print(f"{i}. {first_line}")
+    
 
         if "two dining halls" in doc.page_content.lower():
-            print("✅ FOUND THE CORRECT CHUNK!")
+          pass
 
     return docs
 
