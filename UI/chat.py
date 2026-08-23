@@ -282,6 +282,7 @@ def get_response(question, graph):
 
             
             for key, value in result.items():
+                pass
                
               
 

@@ -34,8 +34,8 @@ def correctness_evaluator(run, example):
 
     return {
         "key": "correctness",
-        "score": result["score"] / 10.0,
-        "comment": result["reason"],
+        "score": result.get("score", 0) / 10.0,
+       "comment": result.get("reason", "")
     }
 
 def relevance_evaluator(run, example):
@@ -47,8 +47,8 @@ def relevance_evaluator(run, example):
 
     return {
         "key": "relevance",
-        "score": result["score"] / 10.0,
-        "comment": result["reason"],
+       "score": result.get("score", 0) / 10.0,
+        "comment": result.get("reason", "")
     }
 
 
@@ -61,8 +61,8 @@ def helpfulness_evaluator(run, example):
 
     return {
         "key": "helpfulness",
-        "score": result["score"] / 10.0,
-        "comment": result["reason"],
+        "score": result.get("score", 0) / 10.0,
+        "comment": result.get("reason", ""),
     }
 
 def faithfulness_evaluator(run, example):
@@ -74,8 +74,8 @@ def faithfulness_evaluator(run, example):
 
     return {
         "key": "faithfulness",
-        "score": result["score"] / 10.0,
-        "comment": result["reason"],
+       "score": result.get("score", 0) / 10.0,
+       "comment": result.get("reason", "")
     }
 # Run evaluation
 experiment = evaluate(
