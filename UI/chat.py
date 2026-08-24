@@ -1,7 +1,7 @@
 import streamlit as st
 import uuid
 import time 
-from backend.message_db import save_message
+from backend.persistence import safe_save_message
 from backend.assistant_router import assistant_router
 import traceback
 
@@ -319,7 +319,7 @@ def handle_user_prompt(prompt, graph):
     )
 
     try:
-        save_message(
+        safe_save_message(
             session_id=st.session_state.session_id,
             role="user",
             message=prompt
@@ -365,7 +365,8 @@ def handle_user_prompt(prompt, graph):
 
         # Save assistant message in database
         try:
-            saved_message = save_message(
+            saved_message = safe_save_message(
+
                 session_id=st.session_state.session_id,
                 role="assistant",
                 message=answer,

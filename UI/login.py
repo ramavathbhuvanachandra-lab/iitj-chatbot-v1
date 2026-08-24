@@ -1,10 +1,16 @@
 import streamlit as st
 
-from backend.user_db import get_or_create_user
-from backend.session_db import create_session
+from backend.authentication import authenticate_user
 
 
 def render_login():
+    """
+    Render the demo phone-number login.
+
+    Authentication and persistence decisions are handled by the
+    backend authentication layer so this UI remains reusable when
+    the frontend is replaced later.
+    """
 
     st.title("🎓 IIT Jodhpur AI Assistant")
 
@@ -17,30 +23,54 @@ def render_login():
     phone = st.text_input(
         "Phone Number",
         max_chars=10,
-        placeholder="Enter 10-digit mobile number"
+        placeholder="Enter 10-digit mobile number",
     )
-
-
 
     if st.button("Continue", use_container_width=True):
 
-        if len(name.strip()) < 3:
+        # ---------------------------------------------------------
+        # Validate input
+        # ---------------------------------------------------------
+
+        name = name.strip()
+        phone = phone.strip()
+
+        if len(name) < 3:
             st.error("Please enter your full name.")
             return
-        
-        phone = phone.strip()
-        
-        if not phone.strip() or len(phone) != 10:
-            st.error("Please enter your phone number.")
+
+        if len(phone) != 10 or not phone.isdigit():
+            st.error("Please enter a valid 10-digit phone number.")
             return
 
-        user = get_or_create_user(name, phone)
+        # ---------------------------------------------------------
+        # Authenticate through application layer
+        # ---------------------------------------------------------
 
-        session = create_session(user["user_id"])
+        auth_result = authenticate_user(
+            name=name,
+            phone=phone,
+        )
+
+        if not auth_result["authenticated"]:
+            st.error("Unable to start your session. Please try again.")
+            return
+
+        # ---------------------------------------------------------
+        # Store session state
+        # ---------------------------------------------------------
 
         st.session_state.logged_in = True
-        st.session_state.user_id = user["user_id"]
-        st.session_state.user_name = user["name"]
-        st.session_state.session_id = session["session_id"]
+        st.session_state.user_id = auth_result["user_id"]
+        st.session_state.user_name = auth_result["user_name"]
+        st.session_state.session_id = auth_result["session_id"]
+
+        st.session_state.persistence_available = (
+            auth_result["persistence_available"]
+        )
+
+        st.session_state.persistence_mode = (
+            auth_result["persistence_mode"]
+        )
 
         st.rerun()
