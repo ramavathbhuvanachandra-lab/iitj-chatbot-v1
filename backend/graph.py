@@ -13,6 +13,8 @@ Production pipeline:
       ↓
     Deduplication
       ↓
+    Local Context Expansion
+      ↓
     Conservative Reranking
       ↓
     Evidence Sufficiency
@@ -40,6 +42,7 @@ from backend.nodes import (
     resolve_conversation_node,
     hybrid_retrieve,
     fuse_retrieved_documents,
+    expand_retrieved_context,
     rerank_retrieved_documents,
     assess_evidence_node,
     assess_evidence_coverage_node,
@@ -53,6 +56,9 @@ from backend.nodes import (
 # =========================================================
 
 def create_graph():
+    """
+    Build the production IIT Jodhpur V1 workflow.
+    """
 
     workflow = StateGraph(
         GraphState
@@ -75,6 +81,11 @@ def create_graph():
     workflow.add_node(
         "fuse_retrieved_documents",
         fuse_retrieved_documents,
+    )
+
+    workflow.add_node(
+        "expand_retrieved_context",
+        expand_retrieved_context,
     )
 
     workflow.add_node(
@@ -123,6 +134,11 @@ def create_graph():
 
     workflow.add_edge(
         "fuse_retrieved_documents",
+        "expand_retrieved_context",
+    )
+
+    workflow.add_edge(
+        "expand_retrieved_context",
         "rerank_retrieved_documents",
     )
 
