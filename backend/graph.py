@@ -1,35 +1,70 @@
-from langgraph.graph import StateGraph, START, END
+"""
+IIT Jodhpur V1 — LangGraph Workflow
+
+Production pipeline:
+
+    START
+      ↓
+    Conversation Resolver
+      ↓
+    Hybrid Retrieval
+      ↓
+    Weighted RRF
+      ↓
+    Deduplication
+      ↓
+    Conservative Reranking
+      ↓
+    Evidence Sufficiency
+      ↓
+    Evidence Coverage
+      ↓
+    Context Preparation
+      ↓
+    One Answer LLM Call
+      ↓
+    Answer Guard
+      ↓
+    END
+"""
+
+from langgraph.graph import (
+    StateGraph,
+    START,
+    END,
+)
 
 from backend.state import GraphState
+
 from backend.nodes import (
-    rewrite_query,
-    generate_multi_query,
+    resolve_conversation_node,
     hybrid_retrieve,
     fuse_retrieved_documents,
+    rerank_retrieved_documents,
+    assess_evidence_node,
+    assess_evidence_coverage_node,
     compress_context,
     generate_answer,
 )
 
 
+# =========================================================
+# Create Graph
+# =========================================================
+
 def create_graph():
-    """
-    Create and compile the LangGraph workflow.
-    """
 
-    workflow = StateGraph(GraphState)
-
-    # -------------------------
-    # Register Nodes
-    # -------------------------
-
-    workflow.add_node(
-        "rewrite_query",
-        rewrite_query,
+    workflow = StateGraph(
+        GraphState
     )
 
+    # -----------------------------------------------------
+    # Nodes
+    # -----------------------------------------------------
+
     workflow.add_node(
-        "generate_multi_query",
-        generate_multi_query,
+        "resolve_conversation",
+        resolve_conversation_node,
     )
 
     workflow.add_node(
@@ -43,6 +78,21 @@ def create_graph():
     )
 
     workflow.add_node(
+        "rerank_retrieved_documents",
+        rerank_retrieved_documents,
+    )
+
+    workflow.add_node(
+        "assess_evidence",
+        assess_evidence_node,
+    )
+
+    workflow.add_node(
+        "assess_evidence_coverage",
+        assess_evidence_coverage_node,
+    )
+
+    workflow.add_node(
         "compress_context",
         compress_context,
     )
@@ -52,22 +102,17 @@ def create_graph():
         generate_answer,
     )
 
-    # -------------------------
-    # Connect Nodes
-    # -------------------------
+    # -----------------------------------------------------
+    # Edges
+    # -----------------------------------------------------
 
     workflow.add_edge(
         START,
-        "rewrite_query",
+        "resolve_conversation",
     )
 
     workflow.add_edge(
-        "rewrite_query",
-        "generate_multi_query",
-    )
-
-    workflow.add_edge(
-        "generate_multi_query",
+        "resolve_conversation",
         "hybrid_retrieve",
     )
 
@@ -78,6 +123,21 @@ def create_graph():
 
     workflow.add_edge(
         "fuse_retrieved_documents",
+        "rerank_retrieved_documents",
+    )
+
+    workflow.add_edge(
+        "rerank_retrieved_documents",
+        "assess_evidence",
+    )
+
+    workflow.add_edge(
+        "assess_evidence",
+        "assess_evidence_coverage",
+    )
+
+    workflow.add_edge(
+        "assess_evidence_coverage",
         "compress_context",
     )
 

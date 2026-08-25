@@ -4,6 +4,7 @@ from langchain_core.documents import Document
 
 
 class GraphState(TypedDict, total=False):
+
     # =========================================================
     # User Input
     # =========================================================
@@ -12,14 +13,16 @@ class GraphState(TypedDict, total=False):
     chat_history: List[Dict[str, Any]]
 
     # =========================================================
-    # Query Processing
+    # Conversation Resolution
     # =========================================================
 
-    rewritten_question: str
-    generated_queries: List[str]
+    resolved_question: str
+    conversation_mode: str
+    active_topic: str
+    active_entity: str
 
     # =========================================================
-    # Retrieval Pipeline
+    # Retrieval
     # =========================================================
 
     retrieval_results: List[List[Document]]
@@ -30,7 +33,21 @@ class GraphState(TypedDict, total=False):
     compressed_docs: List[Document]
 
     # =========================================================
-    # Final Output
+    # Evidence
+    # =========================================================
+
+    evidence_status: str
+    evidence_score: float
+    relevant_evidence_documents: int
+
+    evidence_coverage_status: str
+    evidence_question_type: str
+    evidence_strong_documents: int
+    evidence_partial_documents: int
+    evidence_combined_characters: int
+
+    # =========================================================
+    # Final Answer
     # =========================================================
 
     answer: str
@@ -43,7 +60,9 @@ class GraphState(TypedDict, total=False):
     hallucination_score: float
     answer_score: float
 
-
+    # =========================================================
+    # Answer Guard
+    # =========================================================
 
     answer_guard_status: str
     answer_guard_reason: str
